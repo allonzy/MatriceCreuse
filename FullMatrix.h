@@ -1,7 +1,7 @@
 #ifndef _FULLMATRIX_
 #define _FULLMATRIX_
 #include <iostream>
-#include <map>
+#include <string>
 
 using namespace std;
 
@@ -13,8 +13,9 @@ class FullMatrix
 		int fullMatrix_width;
 	public:
 		FullMatrix();
-		FullMatrix(int height, int width)
+		FullMatrix(int height, int width);
 		FullMatrix(string path);
+		FullMatrix(FullMatrix& m2);
 		~FullMatrix();
 
 		int FullMatrix_getHeight();
@@ -26,5 +27,14 @@ class FullMatrix
 		void FullMatrix_setValue(int x, int y, int value);
 
 		void FullMatrix_display();
+
+		void FullMatrix_clear();
+		void FullMatrix_setEmptyMatrix(int height, int width);
+
+		bool FullMatrix_loadMatrix(string matrixName); 	// matrixName doesn't contain file extension nor the path to this file's directory. // Return false if the file doesn't exist.
+
+		FullMatrix& operator+(FullMatrix& m2);
+		FullMatrix& operator+=(FullMatrix& m2);
+		// On aura besoin des fonctions d'addition, de soustraction, de multiplication et de divisions.
 };
 #endif
