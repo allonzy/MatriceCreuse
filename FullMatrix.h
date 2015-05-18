@@ -1,9 +1,29 @@
-#ifndef _FULLMATRIX_
-#define _FULLMATRIX_
+//!
+//!	\file		FullMatrix.h
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
+//!	\version	1.0
+//! \brief      Fichier de déclaration de la classe FullMatrix. Définit les matrices pleines et leurs possibilités d'utilisation.
+//!
+
+// --------------------------------
+
+#ifndef FULLMATRIX_H
+#define FULLMATRIX_H
+
 #include <iostream>
 #include <string>
 
+// --------------------------------
+
 using namespace std;
+
+// --------------------------------
+
+//!
+//! \class 		FullMatrix
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
+//! \brief      Cette classe définit ce qu'est une matrice pleine, ses accesseurs, ainsi que les surcharges d'opérateurs associées.
+//!
 
 class FullMatrix
 {
@@ -11,6 +31,7 @@ class FullMatrix
 		int** fullMatrix_m;
 		int fullMatrix_height;
 		int fullMatrix_width;
+
 	public:
 		FullMatrix();
 		FullMatrix(int height, int width);
@@ -31,10 +52,13 @@ class FullMatrix
 		void FullMatrix_clear();
 		void FullMatrix_setEmptyMatrix(int height, int width);
 
-		bool FullMatrix_loadMatrix(string matrixName); 	// matrixName doesn't contain file extension nor the path to this file's directory. // Return false if the file doesn't exist.
+		bool FullMatrix_loadMatrix(string matrixName);
 
 		FullMatrix& operator+(FullMatrix& m2);
 		FullMatrix& operator+=(FullMatrix& m2);
-		// On aura besoin des fonctions d'addition, de soustraction, de multiplication et de divisions.
+		FullMatrix& operator-(FullMatrix& m2);
+		FullMatrix& operator-=(FullMatrix& m2);
+		
 };
+
 #endif
