@@ -1,6 +1,6 @@
 //!
 //!	\file		FullMatrix.cpp
-//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp, Clément Personnettaz
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
 //!	\version	1.0
 //! \brief      Fichier d'implémentation de la classe FullMatrix. Définit les matrices pleines et leurs possibilités d'utilisation.
 //! \details    Cette classe définit ce qu'est une matrice pleine, ses accesseurs, ainsi que les surcharges d'opérateurs associées.
@@ -56,7 +56,7 @@ FullMatrix::FullMatrix(int height, int width){
 
 FullMatrix::FullMatrix(string name){
 	FullMatrix_setHeight(0);
-	FullMatrix_setWidth(0);
+	FullMatrix_setWidth(0);	
 	FullMatrix_loadMatrix(name);
 }
 
@@ -230,21 +230,20 @@ void FullMatrix::FullMatrix_setEmptyMatrix(int height, int width){
 //!
 
 bool FullMatrix::FullMatrix_loadMatrix(string matrixName){
-	int rowSize;
-	int colSize;
-	int value;
+	int rowSize;														
+	int colSize;													
+	int value;															
 
-	string pathToMatrix = "Matrix/" + matrixName + ".full";
+	string pathToMatrix = "Matrix/" + matrixName + ".full"; 
 	ifstream loadedMatrix(pathToMatrix.c_str(), ios::in);
 	if(loadedMatrix)
     {
     	loadedMatrix >> rowSize;
     	loadedMatrix >> colSize;
     	FullMatrix_setEmptyMatrix(rowSize,colSize);
-
-		for (int iRow = 0; iRow < rowSize; iRow++)
+		for (int iRow = 0; iRow < FullMatrix_getHeight(); iRow++)
         {
-        	for (int iCol = 0; iCol < colSize; iCol++)
+        	for (int iCol = 0; iCol < FullMatrix_getWidth(); iCol++)
         	{
         		loadedMatrix >> value;
         		FullMatrix_setValue(iRow, iCol, value);
@@ -259,7 +258,31 @@ bool FullMatrix::FullMatrix_loadMatrix(string matrixName){
     }
     return true;
 }
+bool FullMatrix::FullMatrix_saveMatrix(string matrixName)
+{
+	string pathToMatrix = "Matrix/" + matrixName + ".full";
+	ofstream Matrix(pathToMatrix.c_str(), ios::out);
+        
+        if(Matrix)
+        {
+            Matrix << FullMatrix_getWidth() <<" "<< FullMatrix_getHeight()<< "\n";
+            for(int x = 0;x < FullMatrix_getHeight() ; x++){
+            	for (int y = 0; y < FullMatrix_getWidth(); y++)
+            	{
+            		Matrix << FullMatrix_getValue(x,y) << " ";
+            	}
+            	Matrix << "\n";
+            }
 
+                Matrix.close();
+        } 
+            else
+    {
+    	cerr << "saveMatrix error : impossible to create " << matrixName << ".full\n";
+    	return false;
+    }
+
+}
 // --------------------------------
 
 //!
@@ -275,7 +298,7 @@ FullMatrix& FullMatrix::operator+(FullMatrix& m2){
 		cerr << "operator + error : matrix uncompatible." << endl;
 		return *this;
 	}
-
+	
 	FullMatrix& tmp(*this);
 	tmp += m2;
 
@@ -291,22 +314,22 @@ FullMatrix& FullMatrix::operator+(FullMatrix& m2){
 //! \returns	Renvoie un pointeur sur la matrice résultat.
 //!
 
-FullMatrix& FullMatrix::operator+=(FullMatrix& m2){
-	if (FullMatrix_getHeight() != m2.FullMatrix_getHeight() || FullMatrix_getWidth() != m2.FullMatrix_getWidth())
-	{
+void FullMatrix::operator+=(FullMatrix& m2){
+	if (FullMatrix_getHeight() != m2.FullMatrix_getHeight() || FullMatrix_getWidth() != m2.FullMatrix_getWidth()){
 		cerr << "operator += error : matrix uncompatible." << endl;
-		return* this;
 	}
-	for (int iRow = 0; iRow < FullMatrix_getHeight(); iRow++)
+	else
 	{
-		for (int iCol = 0; iCol < FullMatrix_getWidth(); iCol++)
+		for (int iRow = 0; iRow < FullMatrix_getHeight(); iRow++)
 		{
-			int v1 = FullMatrix_getValue(iRow,iCol);
-        	int v2 = m2.FullMatrix_getValue(iRow,iCol);
-        	FullMatrix_setValue(iRow, iCol,v1+v2);
+			for (int iCol = 0; iCol < FullMatrix_getWidth(); iCol++)
+			{
+				int v1 = FullMatrix_getValue(iRow,iCol);
+	        	int v2 = m2.FullMatrix_getValue(iRow,iCol);
+	        	FullMatrix_setValue(iRow, iCol,v1+v2);
+			}
 		}
 	}
-	return *this;
 }
 
 // --------------------------------
@@ -324,7 +347,7 @@ FullMatrix& FullMatrix::operator-(FullMatrix& m2){
 		cerr << "operator - error : matrix uncompatible." << endl;
 		return *this;
 	}
-
+	
 	FullMatrix& tmp(*this);
 	tmp -= m2;
 
@@ -340,22 +363,64 @@ FullMatrix& FullMatrix::operator-(FullMatrix& m2){
 //! \returns	Renvoie un pointeur sur la matrice résultat.
 //!
 
-FullMatrix& FullMatrix::operator-=(FullMatrix& m2){
+void FullMatrix::operator-=(FullMatrix& m2){
 	if (FullMatrix_getHeight() != m2.FullMatrix_getHeight() || FullMatrix_getWidth() != m2.FullMatrix_getWidth())
 	{
 		cerr << "operator -= error : matrix uncompatible." << endl;
-		return* this;
 	}
-	for (int iRow = 0; iRow < FullMatrix_getHeight(); iRow++)
+	else
 	{
-		for (int iCol = 0; iCol < FullMatrix_getWidth(); iCol++)
+		for (int iRow = 0; iRow < FullMatrix_getHeight(); iRow++)
 		{
-			int v1 = FullMatrix_getValue(iRow,iCol);
-        	int v2 = m2.FullMatrix_getValue(iRow,iCol);
-        	FullMatrix_setValue(iRow, iCol,v1-v2);
+			for (int iCol = 0; iCol < FullMatrix_getWidth(); iCol++)
+			{
+				int v1 = FullMatrix_getValue(iRow,iCol);
+	        	int v2 = m2.FullMatrix_getValue(iRow,iCol);
+	        	FullMatrix_setValue(iRow, iCol,v1-v2);
+			}
 		}
 	}
-	return *this;
 }
 
 // --------------------------------
+FullMatrix& FullMatrix::operator=(FullMatrix& m2)
+{
+	FullMatrix& m(m2);
+	return m;
+}
+//--------------------------------
+FullMatrix& FullMatrix::operator*(FullMatrix& m2)
+{
+	if(FullMatrix_getWidth() != FullMatrix_getHeight()){
+			cerr << "operator*: incompatible matrix\n ";
+			return *this;
+		}
+	else {
+		FullMatrix m(FullMatrix_getHeight() , m2.FullMatrix_getWidth()) ;
+		for (int x = 0; x < FullMatrix_getHeight(); x++)
+		{
+			for (int y = 0; y < FullMatrix_getWidth(); y++)
+			{
+				int tmpTotal = 0;
+				for(int i = 0 ;i < m2.FullMatrix_getHeight() ; i++){
+					tmpTotal += FullMatrix_getValue(x,i) * FullMatrix_getValue(i,y);
+				}
+				FullMatrix_setValue(x,y,tmpTotal);
+			}
+		}
+	}
+}
+int main(int argc, char const *argv[])
+{
+	FullMatrix m(3,3);
+	/*m.FullMatrix_setValue(0,0,2);
+	m.FullMatrix_setValue(1,1,2);
+	m.FullMatrix_setValue(2,2,2);*/
+	m.FullMatrix_loadMatrix("Test");
+	m.FullMatrix_display();
+	m = m+m;
+	m.FullMatrix_display();
+	m.FullMatrix_saveMatrix("Tost");
+
+	return 0;
+}

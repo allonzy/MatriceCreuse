@@ -1,6 +1,6 @@
 //!
 //!	\file		SparseMatrix.cpp
-//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp, Clément Personnettaz
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
 //!	\version	1.0
 //! \brief      Fichier d'implémentation de la classe SparseMatrix. Définit les matrices creuses et leurs possibilités d'utilisation.
 //! \details    Cette classe définit ce qu'est une matrice creuse, ses accesseurs, ainsi que les surcharges d'opérateurs associées.
@@ -99,15 +99,6 @@ SparseMatrix::~SparseMatrix(){
 // --------------------------------
 
 //!
-//! \brief      Récupère le pourcentage d'utilisation de la matrice.
-//! \return		Un \e int représentant le pourcentage d'utilisation de la matrice.
-//!
-
-int SparseMatrix::SparseMatrix_getMaxUse(){return sparseMatrix_maxUse;}
-
-// --------------------------------
-
-//!
 //! \brief      Récupère le niveau d'utilisation de la matrice.
 //! \return		Un \e int représentant le niveau d'utilisation de la matrice.
 //!
@@ -131,15 +122,6 @@ int SparseMatrix::SparseMatrix_getHeight(){return sparseMatrix_height;}
 //!
 
 int SparseMatrix::SparseMatrix_getWidth(){return sparseMatrix_width;}
-
-// --------------------------------
-
-//!
-//! \brief      Récupère le nombre d'éléments de la matrice.
-//! \return		Un \e int représentant le nombre d'éléments de la matrice.
-//!
-
-int SparseMatrix_getElements(){return sparseMatrix_elements;}
 
 // --------------------------------
 
@@ -171,25 +153,29 @@ int SparseMatrix::SparseMatrix_getValue(int x,int y){
 //! \param		maxUse 	Pourcentage maximal d'utilisation de la matrice, défini par l'utilisateur.
 //!
 
-void SparseMatrix::SparseMatrix_setMaxUse(int maxUse){sparseMatrix_maxUse=maxUse;}
+
+void SparseMatrix::SparseMatrix_setUse(){
+	if(SparseMatrix_getHeight() != 0 && SparseMatrix_getWidth() != 0){
+		double numberOfCase = SparseMatrix_getHeight() * SparseMatrix_getWidth();
+		double usedCase =sparseMatrix_m.size();
+		double tmpUse = usedCase / numberOfCase * 100;
+		int use=tmpUse;
+		SparseMatrix_setUse(use);
+	}
+}
 
 // --------------------------------
 
 //!
-//! \brief      Assigne une valeur d'utilisation de la matrice.
-//! \param		use 	Valeur d'utilisation de la matrice.
+//! \brief      Assigne un pourcentage maximal d'utilisation de la matrice.
+//! \param		maxUse 	Pourcentage maximal d'utilisation de la matrice, défini par l'utilisateur.
 //!
 
-void SparseMatrix::SparseMatrix_setUse(int use){sparseMatrix_use=use;}
 
-// --------------------------------
-
-//!
-//! \brief      Assigne le nombre d'elements de la matrice.
-//! \param		elements	Nombre d'elements de la matrice.
-//!
-
-void SparseMatrix_setElements(int elements){sparseMatrix_elements=elements;}
+void SparseMatrix::SparseMatrix_setUse(int use){
+	if(use > 0 && use < 100)
+		sparseMatrix_use=use;
+}
 
 // --------------------------------
 
@@ -220,32 +206,21 @@ void SparseMatrix::SparseMatrix_setWidth(int width){sparseMatrix_width=width;}
 //!
 
 void SparseMatrix::SparseMatrix_setValue(int x,int y,int value){
-	map<pair<int,int>,int>::iterator it = sparseMatrix_m.find(make_pair(x,y));				// On place un itérateur à la position donnée.
-	if(value == 0)																			// Si la valeur de cette case vaut 0 (zéro) ...
-	{
-		if(!sparseMatrix_m[make_pair(x,y)]){
-			sparseMatrix_m.erase(it);		                                                // On efface la case donnée.
-			sparseMatrix_elements--
-		}
+					// On place un itérateur à la position donnée.
+	if(value == 0){																			// Si la valeur de cette case vaut 0 (zéro) ...
+	
+		if( sparseMatrix_m.find(make_pair(x,y)) != sparseMatrix_m.end())
+			sparseMatrix_m.erase(make_pair(x,y));											// On efface la case donnée.
 		else return;
 	}
-	else if(x > SparseMatrix_getHeight()  || y > SparseMatrix_getWidth() ){					// Sinon, si la valeur est hors des bornes de la matrice ...
-		cerr << "setValueError: value is out of range \n";									// ... on affiche une erreur.
+	else if(x > SparseMatrix_getHeight()  || y > SparseMatrix_getWidth() || x < 0 || y < 0){					// Sinon, si la valeur est hors des bornes de la matrice ...
+		cerr << "setValueError: value(x:"<<x<<")("<<y<<") is out of range \n";									// ... on affiche une erreur.
 	}
 	else{																					// Sinon, on a une valeur correcte ...
-		sparseMatrix_m.insert(it, std::pair<pair<int,int>,int>(make_pair(x,y),value));		// ... on réassigne donc la case à la valeur donnée.
-		sparseMatrix_elements++;
+		
+		sparseMatrix_m[make_pair(x,y)]=value;		// ... on réassigne donc la case à la valeur donnée.
 	}
 }
-
-// --------------------------------
-
-//!
-//! \brief      Calcule le pourcentage de la matrice.
-//! \details	Calcule le pourcentage de la matrice et le met dans Use pour connaitre le pourcentage.
-//!
-
-void SparseMatrix::SparseMatrix_percentUse(){sparseMatrix_use = (sparseMatrix_elements / (sparseMatrix_height * sparseMatrix_width)) * 100}
 
 // --------------------------------
 
@@ -294,12 +269,14 @@ bool SparseMatrix::SparseMatrix_loadMatrix(string matrixName)
 	int colSize;
 	int value;
 
-	string pathToMatrix = "Matrix/" + matrixName + ".full";
+	string pathToMatrix = "Matrix/" + matrixName + ".sparse"; 
 	ifstream loadedMatrix(pathToMatrix.c_str(), ios::in);
 	if(loadedMatrix)
     {
-    	loadedMatrix >> rowSize;
     	loadedMatrix >> colSize;
+    	loadedMatrix >> rowSize;
+    	SparseMatrix_setHeight(colSize);
+    	SparseMatrix_setWidth(rowSize);
     	SparseMatrix_clear();
     	int row,col;
 			while(true)
@@ -309,15 +286,40 @@ bool SparseMatrix::SparseMatrix_loadMatrix(string matrixName)
         		if(loadedMatrix.eof())break;
         	}
         loadedMatrix.close();
+        SparseMatrix_setUse();
     }
     else
     {
-    	cerr << "loadMatrix error : impossible to open " << matrixName << ".full\n";
+    	cerr << "loadMatrix error : impossible to open " << matrixName << ".sparse\n";
     	return false;
     }
     return true;
 }
+//---------------------------------
+bool SparseMatrix::SparseMatrix_saveMatrix(string matrixName)
+{
+	string pathToMatrix = "Matrix/" + matrixName + ".sparse";
+	ofstream Matrix(pathToMatrix.c_str(), ios::out);  //déclaration du flux et ouverture du fichier
+      //  Matrix.open(pathToMatrix);
+        if(Matrix)  // si l'ouverture a réussi
+        {
+            Matrix << SparseMatrix_getWidth() <<" "<< SparseMatrix_getHeight()<< "\n";
+            for(int x = 0;x < SparseMatrix_getHeight() ; x++){
+            	for (int y = 0; y < SparseMatrix_getWidth(); y++)
+            	{
+            		if(SparseMatrix_getValue(x,y) != 0)Matrix <<x<<" "<<y<<" "<< SparseMatrix_getValue(x,y) << "\n";
+            	}
+            }
 
+                Matrix.close();  // on referme le fichier
+        } 
+            else
+    {
+    	cerr << "saveMatrix error : impossible to create " << matrixName << ".sparse\n";
+    	return false;
+    }
+
+}
 // --------------------------------
 
 //!
@@ -327,23 +329,23 @@ bool SparseMatrix::SparseMatrix_loadMatrix(string matrixName)
 //! \returns	Renvoie un pointeur sur la matrice résultat.
 //!
 
-SparseMatrix& SparseMatrix::operator+=(SparseMatrix& m2)
+void SparseMatrix::operator+=(SparseMatrix& m2)
 {
-	if (SparseMatrix_getHeight() != m2.SparseMatrix_getHeight() || SparseMatrix_getWidth() != m2.SparseMatrix_getWidth())
-	{
+	if (SparseMatrix_getHeight() != m2.SparseMatrix_getHeight() || SparseMatrix_getWidth() != m2.SparseMatrix_getWidth()){
 		cerr << "operator += error : matrix uncompatible." << endl;
-		return* this;
 	}
-	for (int iRow = 0; iRow < SparseMatrix_getHeight(); iRow++)
-	{
-		for (int iCol = 0; iCol < SparseMatrix_getWidth(); iCol++)
+	else {
+		for (int iRow = 0; iRow < SparseMatrix_getHeight(); iRow++)
 		{
-			int v1 = SparseMatrix_getValue(iRow,iCol);
-        	int v2 = m2.SparseMatrix_getValue(iRow,iCol);
-        	SparseMatrix_setValue(iRow, iCol,v1+v2);
+			for (int iCol = 0; iCol < SparseMatrix_getWidth(); iCol++)
+			{
+				int v1 = SparseMatrix_getValue(iRow,iCol);
+	        	int v2 = m2.SparseMatrix_getValue(iRow,iCol);
+	        	SparseMatrix_setValue(iRow, iCol,v1+v2);
+			}
 		}
+		SparseMatrix_setUse();
 	}
-	return *this;
 }
 
 // --------------------------------
@@ -362,11 +364,56 @@ SparseMatrix& SparseMatrix::operator+(SparseMatrix& m2)
 		cerr << "operator + error : matrix uncompatible." << endl;
 		return *this;
 	}
-
+	
 	SparseMatrix& tmp(*this);
 	tmp += m2;
-
 	return tmp;
 }
+//!
+//! \brief      Opérateur de multiplication (*) de matrices creuses.
+//! \details	Permet la multiplication des valeurs d'une matrice dans une autre.
+//!	\param		m2 		Matrice à multiplier avec la première.
+//! \returns	Renvoie une matrice, résultant de l'opération.
+//!
 
+SparseMatrix& SparseMatrix::operator*(SparseMatrix& m2)
+{
+	if(SparseMatrix_getWidth() != SparseMatrix_getHeight()){
+			cerr << "operator*: incompatible matrix\n ";
+			return *this;
+		}
+	else {
+		SparseMatrix m(SparseMatrix_getHeight() , m2.SparseMatrix_getWidth()) ;
+		for (int x = 0; x < SparseMatrix_getHeight(); x++)
+		{
+			for (int y = 0; y < SparseMatrix_getWidth(); y++)
+			{
+				int tmpTotal = 0;
+				for(int i = 0 ;i < m2.SparseMatrix_getHeight() ; i++){
+					tmpTotal += SparseMatrix_getValue(x,i) * SparseMatrix_getValue(i,y);
+				}
+				SparseMatrix_setValue(x,y,tmpTotal);
+			}
+		}
+	}
+}
 // --------------------------------
+SparseMatrix& SparseMatrix::operator=(SparseMatrix& m2)
+{
+	SparseMatrix& m(m2);
+	return m;
+}
+int main(int argc, char const *argv[])
+{
+	SparseMatrix m(3,3);
+	/*m.SparseMatrix_setValue(0,0,2);
+	m.SparseMatrix_setValue(1,1,2);
+	m.SparseMatrix_setValue(2,2,2);*/
+	m.SparseMatrix_loadMatrix("Test");
+	m.SparseMatrix_display();
+	m = m*m;
+	m.SparseMatrix_display();
+	m.SparseMatrix_saveMatrix("Tost");
+	cout<<m.SparseMatrix_getUse()<<endl;
+	return 0;
+}
