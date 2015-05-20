@@ -41,8 +41,8 @@ class Matrix
 		int Matrix_getWidth();
 		void Matrix_setWidth(int width);
 
-		FullMatrix& Matrix_getFullMatrix()
-		SparseMatrix& Matrix_getSparseMatrix()
+		FullMatrix& Matrix_getFullMatrix();
+		SparseMatrix& Matrix_getSparseMatrix();
 
 		void Matrix_conversion();
 		void Matrix_conversionForOperations();
