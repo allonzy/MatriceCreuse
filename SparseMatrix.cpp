@@ -140,7 +140,7 @@ int SparseMatrix::SparseMatrix_getValue(int x,int y){
 		cerr << "getValueError : value is out of range \n";
 	}
 
-	if( ! sparseMatrix_m[make_pair(x,y)]){
+	else if( ! sparseMatrix_m[make_pair(x,y)]){
 		return 0;
 	}
 	else {
@@ -158,15 +158,19 @@ int SparseMatrix::SparseMatrix_getValue(int x,int y){
 
 void SparseMatrix::SparseMatrix_setUse(){
 	if(SparseMatrix_getHeight() != 0 && SparseMatrix_getWidth() != 0){
-		double numberOfCase = SparseMatrix_getHeight() * SparseMatrix_getWidth();
-		double usedCase =sparseMatrix_m.size();
-		double tmpUse = usedCase / numberOfCase * 100;
-		int use=tmpUse;
+		float numberOfCase = SparseMatrix_getHeight() * SparseMatrix_getWidth();
+		float usedCase =sparseMatrix_m.size();
+		float use = usedCase / numberOfCase * 100;
+
 		SparseMatrix_setUse(use);
 	}
 	else SparseMatrix_setUse(0);
 }
-
+//---------------------------------
+pair<int,int> SparseMatrix::SparseMatrix_getKey(map<pair<int,int>,int>::iterator itr)
+{
+	return (*itr).first;
+}
 // --------------------------------
 
 //!
@@ -175,7 +179,7 @@ void SparseMatrix::SparseMatrix_setUse(){
 //!
 
 
-void SparseMatrix::SparseMatrix_setUse(int use){
+void SparseMatrix::SparseMatrix_setUse(float use){
 	if(use >= 0 && use <= 100)
 		sparseMatrix_use=use;
 	else cerr << "setUse error : out of range \n";
@@ -212,8 +216,8 @@ void SparseMatrix::SparseMatrix_setWidth(int width){sparseMatrix_width=width;}
 void SparseMatrix::SparseMatrix_setValue(int x,int y,int value){
 					// On place un itérateur à la position donnée.
 	if(value == 0){																			// Si la valeur de cette case vaut 0 (zéro) ...
-	
-		if( sparseMatrix_m.find(make_pair(x,y)) != sparseMatrix_m.end())
+	map<pair<int,int>,int>::iterator it = sparseMatrix_m.find(make_pair(x,y) );
+		if( it != sparseMatrix_m.end())
 			sparseMatrix_m.erase(make_pair(x,y));											// On efface la case donnée.
 		else return;
 	}
@@ -221,8 +225,7 @@ void SparseMatrix::SparseMatrix_setValue(int x,int y,int value){
 		cerr << "setValueError: value(x:"<<x<<")("<<y<<") is out of range \n";									// ... on affiche une erreur.
 	}
 	else{																					// Sinon, on a une valeur correcte ...
-		
-		sparseMatrix_m[make_pair(x,y)]=value;		// ... on réassigne donc la case à la valeur donnée.
+		sparseMatrix_m[make_pair(x,y)]=value;												// ... on réassigne donc la case à la valeur donnée.
 	}
 }
 
@@ -382,23 +385,30 @@ SparseMatrix& SparseMatrix::operator+(SparseMatrix& m2)
 
 SparseMatrix& SparseMatrix::operator*(SparseMatrix& m2)
 {
-	if(SparseMatrix_getWidth() != SparseMatrix_getHeight()){
+	if(SparseMatrix_getWidth() != m2.SparseMatrix_getHeight()){
 			cerr << "operator*: incompatible matrix\n ";
 			return *this;
 		}
 	else {
-		SparseMatrix m(SparseMatrix_getHeight() , m2.SparseMatrix_getWidth()) ;
-		for (int x = 0; x < SparseMatrix_getHeight(); x++)
+		int j=0;
+		SparseMatrix& m(m2);
+		m.SparseMatrix_setHeight( SparseMatrix_getHeight() );
+		m.SparseMatrix_setWidth( m2.SparseMatrix_getWidth() );
+		map<pair<int,int>,int>::iterator it= sparseMatrix_m.begin();
+		while(it != sparseMatrix_m.end())
 		{
-			for (int y = 0; y < SparseMatrix_getWidth(); y++)
-			{
-				int tmpTotal = 0;
-				for(int i = 0 ;i < m2.SparseMatrix_getHeight() ; i++){
-					tmpTotal += SparseMatrix_getValue(x,i) * SparseMatrix_getValue(i,y);
-				}
-				SparseMatrix_setValue(x,y,tmpTotal);
+			int x=SparseMatrix_getKey(it).first;
+			int y=SparseMatrix_getKey(it).second;
+			int tmpTotal = 0;
+			for(int i = 0 ;i < m2.SparseMatrix_getHeight() ; i++){
+				tmpTotal += m.SparseMatrix_getValue(x,i) * m.SparseMatrix_getValue(i,y);
 			}
+			m.SparseMatrix_setValue(x,y,tmpTotal);
+			it++;
+			j++;
 		}
+		cout <<endl<< j<<endl;
+		return m;
 	}
 
 }

@@ -11,11 +11,11 @@ int main(int argc, char const *argv[])
 {
 	srand (time(NULL));
 	SparseMatrix a(1000, 1000);
-	a.SparseMatrix_random(70);
+	a.SparseMatrix_random(1);
 	SparseMatrix b(1000, 1000);
-	b.SparseMatrix_random(70);
-	a = a+b;
-	cout << a.SparseMatrix_getUse();
+	b.SparseMatrix_random(1);
+	a = a*b ;
+	cout << a.SparseMatrix_getUse()<<endl;
 	a.SparseMatrix_saveMatrix("yolo");
 	return 0;
 }

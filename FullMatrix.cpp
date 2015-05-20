@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <fstream>
 #include <string>
+#include <cstdlib>
 #include "FullMatrix.h"
 
 // --------------------------------
@@ -409,4 +410,16 @@ FullMatrix& FullMatrix::operator*(FullMatrix& m2)
 			}
 		}
 	}
+}
+void FullMatrix::FullMatrix_random()
+{
+	int NumberCase=FullMatrix_getHeight()*FullMatrix_getWidth();
+	for(int i = 0 ; i < NumberCase ; i++)
+	{
+		int x = rand()% FullMatrix_getWidth();
+		int y = rand()% FullMatrix_getHeight();
+		int value = rand() % 2000 -1000;
+		FullMatrix_setValue(x,y,value);
+	}
+
 }

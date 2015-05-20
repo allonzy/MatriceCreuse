@@ -32,12 +32,12 @@ using namespace std;
 class SparseMatrix
 {
 	private:
-		int sparseMatrix_use;
+		float sparseMatrix_use;
 		map<pair<int,int>,int> sparseMatrix_m;
 		int sparseMatrix_height;
 		int sparseMatrix_width;
 
-		void SparseMatrix_setUse(int use);
+		void SparseMatrix_setUse(float use);
 	public:
 		SparseMatrix();
 		SparseMatrix(int height,int width);
@@ -50,6 +50,7 @@ class SparseMatrix
 		int SparseMatrix_getValue(int x,int y);
 		int SparseMatrix_getMaxUse();
 		int SparseMatrix_getUse();
+		pair<int,int> SparseMatrix_getKey(map<pair<int,int>,int>::iterator it);
 
 		void SparseMatrix_setUse();
 		void SparseMatrix_setHeight(int height);

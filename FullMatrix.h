@@ -54,6 +54,7 @@ class FullMatrix
 
 		bool FullMatrix_loadMatrix(string matrixName);
 		bool FullMatrix_saveMatrix(string matrixName);
+		void FullMatrix_random();
 		FullMatrix& operator+(FullMatrix& m2);
 		void operator+=(FullMatrix& m2);
 		FullMatrix& operator-(FullMatrix& m2);
