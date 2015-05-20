@@ -13,6 +13,8 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include <time.h>
+#include <cstdlib>
 #include "SparseMatrix.h"
 
 // --------------------------------
@@ -162,6 +164,7 @@ void SparseMatrix::SparseMatrix_setUse(){
 		int use=tmpUse;
 		SparseMatrix_setUse(use);
 	}
+	else SparseMatrix_setUse(0);
 }
 
 // --------------------------------
@@ -173,8 +176,9 @@ void SparseMatrix::SparseMatrix_setUse(){
 
 
 void SparseMatrix::SparseMatrix_setUse(int use){
-	if(use > 0 && use < 100)
+	if(use >= 0 && use <= 100)
 		sparseMatrix_use=use;
+	else cerr << "setUse error : out of range \n";
 }
 
 // --------------------------------
@@ -265,8 +269,8 @@ void SparseMatrix::SparseMatrix_display(){
 
 bool SparseMatrix::SparseMatrix_loadMatrix(string matrixName)
 {
-	int rowSize;
-	int colSize;
+	int rowSize=0;
+	int colSize=0;
 	int value;
 
 	string pathToMatrix = "Matrix/" + matrixName + ".sparse"; 
@@ -396,6 +400,7 @@ SparseMatrix& SparseMatrix::operator*(SparseMatrix& m2)
 			}
 		}
 	}
+
 }
 // --------------------------------
 SparseMatrix& SparseMatrix::operator=(SparseMatrix& m2)
@@ -403,17 +408,25 @@ SparseMatrix& SparseMatrix::operator=(SparseMatrix& m2)
 	SparseMatrix& m(m2);
 	return m;
 }
-int main(int argc, char const *argv[])
+
+// --------------------------------
+
+void SparseMatrix::SparseMatrix_random(float use)
 {
-	SparseMatrix m(3,3);
-	/*m.SparseMatrix_setValue(0,0,2);
-	m.SparseMatrix_setValue(1,1,2);
-	m.SparseMatrix_setValue(2,2,2);*/
-	m.SparseMatrix_loadMatrix("Test");
-	m.SparseMatrix_display();
-	m = m*m;
-	m.SparseMatrix_display();
-	m.SparseMatrix_saveMatrix("Tost");
-	cout<<m.SparseMatrix_getUse()<<endl;
-	return 0;
+	float tmpNumberCase = use/100 * SparseMatrix_getHeight()*SparseMatrix_getWidth();
+	int NumberCase=tmpNumberCase;
+	for(int i = 0 ; i < NumberCase ; i++)
+	{
+		int x = rand()% SparseMatrix_getWidth();
+		int y = rand()% SparseMatrix_getHeight();
+		int value = rand() % 2000 -1000;
+		SparseMatrix_setValue(x,y,value);
+	}
+	SparseMatrix_setUse();
+}
+//----------------------------------
+void SparseMatrix::SparseMatrix_random()
+{
+	float use = rand()% 100;
+	SparseMatrix_random(use);
 }

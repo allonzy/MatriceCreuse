@@ -410,17 +410,3 @@ FullMatrix& FullMatrix::operator*(FullMatrix& m2)
 		}
 	}
 }
-int main(int argc, char const *argv[])
-{
-	FullMatrix m(3,3);
-	/*m.FullMatrix_setValue(0,0,2);
-	m.FullMatrix_setValue(1,1,2);
-	m.FullMatrix_setValue(2,2,2);*/
-	m.FullMatrix_loadMatrix("Test");
-	m.FullMatrix_display();
-	m = m+m;
-	m.FullMatrix_display();
-	m.FullMatrix_saveMatrix("Tost");
-
-	return 0;
-}

@@ -14,6 +14,8 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include <cstdlib>
+#include <time.h>
 
 // --------------------------------
 
@@ -62,6 +64,11 @@ class SparseMatrix
 		SparseMatrix& operator+(SparseMatrix& m2);
 		SparseMatrix& operator*(SparseMatrix& m2);
 		SparseMatrix& operator=(SparseMatrix& m2);
+
+		void SparseMatrix_random(float use);
+		void SparseMatrix_random();
+
+
 
 };
 
