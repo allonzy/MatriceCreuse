@@ -1,6 +1,6 @@
 //!
 //!	\file		Matrix.h
-//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp, Clément Personnettaz
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
 //!	\version	1.0
 //! \brief      Fichier de déclaration de la classe Matrix. Définit les matrices.
 //!
@@ -8,14 +8,16 @@
 // --------------------------------
 
 #include <string>
+#include "FullMatrix.h"
+#include "SparseMatrix.h"
 
 class Matrix
 {
 
 	private:
-		FullMatrix* fullMatrix;                 // Variable : De type fullMatrix
-		SparseMatrix* sparseMatrix;             // Variable : De type SparseMatrix
-		const static int conversionCap = 70;    // ??
+		FullMatrix* matrix_fullMatrix;
+		SparseMatrix* matrix_sparseMatrix;
+		const static int matrix_conversionCap = 70;
 
 	public:
 		Matrix();
@@ -32,7 +34,7 @@ class Matrix
 		//Matrix operator*=(Matrix m2);
 		static int Matrix_getConversionCap();
 
-		int Matrix_getValue();
+		int Matrix_getValue(int x, int y);
 		void Matrix_setValue(int x, int y, int value);
 
 		int Matrix_getHeight();
@@ -41,11 +43,14 @@ class Matrix
 		int Matrix_getWidth();
 		void Matrix_setWidth(int width);
 
-		FullMatrix& Matrix_getFullMatrix();
-		SparseMatrix& Matrix_getSparseMatrix();
+		FullMatrix* Matrix_getFullMatrix();
+		void Matrix_setFullMatrix(FullMatrix* m2);
+
+		SparseMatrix* Matrix_getSparseMatrix();
+		void Matrix_setSparseMatrix(SparseMatrix* m2);
 
 		void Matrix_conversion();
-		void Matrix_conversionForOperations();
 		void Matrix_sparseToFull();
 		void Matrix_fullToSparse();
+		void Matrix_display();
 };
