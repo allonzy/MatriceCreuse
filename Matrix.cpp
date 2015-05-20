@@ -261,3 +261,21 @@ Matrix& Matrix::operator-=(Matrix& m2){
 
 	}
 }
+
+// --------------------------------
+
+//!
+//! \brief      Récupère la matrice pleine.
+//! \return		Un \e fullMatrice représentant la matrice pleine de la Matrice.
+//!
+
+FullMatrix& Matrix_getFullMatrix() {return fullMatrix;}
+
+// --------------------------------
+
+//!
+//! \brief      Récupère la matrice creuse.
+//! \return		Un \e sparseMatrice représentant la matrice creuse de la Matrice.
+//!
+
+SparseMatrix& Matrix_getSparseMatrix() {return sparseMatrix;}
