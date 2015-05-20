@@ -21,7 +21,7 @@ class Matrix
 
 	public:
 		Matrix();
-		Matrix(string filePath);
+		Matrix(string filePath, bool isSparse);
 		Matrix(int height, int width);
 		Matrix(Matrix& m2);
 		~Matrix();
