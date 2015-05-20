@@ -1,6 +1,6 @@
 //!
 //!	\file		SparseMatrix.cpp
-//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp, Clément Personnettaz
 //!	\version	1.0
 //! \brief      Fichier d'implémentation de la classe SparseMatrix. Définit les matrices creuses et leurs possibilités d'utilisation.
 //! \details    Cette classe définit ce qu'est une matrice creuse, ses accesseurs, ainsi que les surcharges d'opérateurs associées.
@@ -264,7 +264,7 @@ bool SparseMatrix::SparseMatrix_loadMatrix(string matrixName)
 	int colSize;
 	int value;
 
-	string pathToMatrix = "Matrix/" + matrixName + ".full"; 
+	string pathToMatrix = "Matrix/" + matrixName + ".full";
 	ifstream loadedMatrix(pathToMatrix.c_str(), ios::in);
 	if(loadedMatrix)
     {
@@ -332,7 +332,7 @@ SparseMatrix& SparseMatrix::operator+(SparseMatrix& m2)
 		cerr << "operator + error : matrix uncompatible." << endl;
 		return *this;
 	}
-	
+
 	SparseMatrix& tmp(*this);
 	tmp += m2;
 

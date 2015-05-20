@@ -1,6 +1,6 @@
 //!
 //!	\file		FullMatrix.cpp
-//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp, Clément Personnettaz
 //!	\version	1.0
 //! \brief      Fichier d'implémentation de la classe FullMatrix. Définit les matrices pleines et leurs possibilités d'utilisation.
 //! \details    Cette classe définit ce qu'est une matrice pleine, ses accesseurs, ainsi que les surcharges d'opérateurs associées.
@@ -31,15 +31,41 @@ Matrix::Matrix(){
 	Matrix_setSparseMatrix(NULL);
 }
 
-Matrix::Matrix(string filePath){
-	Matrix_setFullMatrix(new FullMatrix(filePath));
-	Matrix_setSparseMatrix(NULL);
-}
+// --------------------------------
+
+//!
+//! \brief      Constructeur de matrice pleine vide, de taille personnalisée.
+//! \details    Ce constructeur initialise une matrice pleine vide dont la taille est donnée en argument.
+//! \param		height 	Taille de la matrice en lignes.
+//! \param		width 	Taille de la matrice en colonnes.
+//!
 
 Matrix::Matrix(int height, int width){
 	Matrix_setFullMatrix(new FullMatrix(height, width));
 	Matrix_setSparseMatrix(NULL);
 }
+
+// --------------------------------
+
+//!
+//! \brief      Constructeur de matrice pleine, à partir d'un fichier.
+//! \details    Ce constructeur initialise une matrice pleine à partir d'un fichier dont le chemin d'accès est donné en argument.
+//! \param		filePath 	Chemin d'accès au fichier contenant la matrice à écrire.
+//!
+
+Matrix::Matrix(string filePath){
+	Matrix_setFullMatrix(new FullMatrix(filePath));
+	Matrix_setSparseMatrix(NULL);
+}
+
+
+// --------------------------------
+
+//!
+//! \brief      Constructeur de matrice creuse par recopie.
+//! \details    Ce constructeur initialise une matrice creuse à partir d'une autre matrice creuse passée en argument.
+//! \param		m2 	Matrice à recopier.
+//!
 
 Matrix::Matrix(Matrix& m2){
 	if(m2.Matrix_getFullMatrix() != NULL)
@@ -53,10 +79,24 @@ Matrix::Matrix(Matrix& m2){
 		Matrix_setSparseMatrix(NULL);
 }
 
+// --------------------------------
+
+//!
+//! \brief      Destructeur de matrice.
+//! \details    Destructeur, libère la mémoire allouée à la matrice.
+//!
+
 Matrix::~Matrix(){
 	delete Matrix_getFullMatrix();
 	delete Matrix_getSparseMatrix();
 }
+
+// --------------------------------
+
+//!
+//! \brief
+//! \details
+//!
 
 void Matrix::Matrix_conversion(){
 	if(Matrix_getFullMatrix() != NULL){
@@ -88,6 +128,13 @@ void Matrix::Matrix_conversion(){
 	}
 }
 
+// --------------------------------
+
+//!
+//! \brief
+//! \details
+//!
+
 void Matrix::Matrix_sparseToFull(){
 	Matrix_setFullMatrix(new FullMatrix(Matrix_getSparseMatrix().SparseMatrix_getHeight(), Matrix_getSparseMatrix().SparseMatrix_getWidth()));
 	for (int iRow = 0; iRow < Matrix_getFullMatrix().FullMatrix_getWidth(); iRow++)
@@ -98,6 +145,13 @@ void Matrix::Matrix_sparseToFull(){
         }
     }
 }
+
+// --------------------------------
+
+//!
+//! \brief
+//! \details
+//!
 
 void Matrix::Matrix_fullToSparse(){
 	Matrix_setSparseMatrix(new SparseMatrix(Matrix_getFullMatrix().FullMatrix_getHeight(), Matrix_getFullMatrix().FullMatrix_getWidth()));
@@ -110,12 +164,26 @@ void Matrix::Matrix_fullToSparse(){
     }
 }
 
+// --------------------------------
+
+//!
+//! \brief
+//! \details
+//!
+
 Matrix& Matrix::operator+(Matrix& m2){
 	Matrix& tmp(*this);
 	tmp += m2;
 
 	return tmp;
 }
+
+// --------------------------------
+
+//!
+//! \brief
+//! \details
+//!
 
 Matrix& Matrix::operator+=(Matrix& m2){
 	if(Matrix_getFullMatrix() != NULL && m2.Matrix_getFullMatrix() != NULL){
@@ -145,12 +213,26 @@ Matrix& Matrix::operator+=(Matrix& m2){
 	}
 }
 
+// --------------------------------
+
+//!
+//! \brief
+//! \details
+//!
+
 Matrix& Matrix::operator-(Matrix& m2){
 	Matrix& tmp(*this);
 	tmp -= m2;
 
 	return tmp;
 }
+
+// --------------------------------
+
+//!
+//! \brief
+//! \details
+//!
 
 Matrix& Matrix::operator-=(Matrix& m2){
 	if(Matrix_getFullMatrix() != NULL && m2.Matrix_getFullMatrix() != NULL){

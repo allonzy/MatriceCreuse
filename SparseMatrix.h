@@ -1,6 +1,6 @@
 //!
 //!	\file		SparseMatrix.h
-//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp, Clément Personnettaz
 //!	\version	1.0
 //! \brief      Fichier de déclaration de la classe SparseMatrix. Définit les matrices creuses et leurs possibilités d'utilisation.
 //!
@@ -24,18 +24,18 @@ using namespace std;
 
 //!
 //! \class 		SparseMatrix
-//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp, Clément Personnettaz
 //! \brief      Cette classe définit ce qu'est une matrice creuse, ses accesseurs, ainsi que les surcharges d'opérateurs associées.
 //!
 
 class SparseMatrix
 {
 	private:
-		int sparseMatrix_maxUse;
-		int sparseMatrix_use;
-		map<pair<int,int>,int> sparseMatrix_m;
-		int sparseMatrix_height;
-		int sparseMatrix_width;
+		int sparseMatrix_maxUse;                    // Variable : Pourcentage d'utilisation de la matrice.
+		int sparseMatrix_use;                       // Variable : Niveau d'utilisation de la matrice.
+		map<pair<int,int>,int> sparseMatrix_m;      //
+		int sparseMatrix_height;                    // Variable : Taille en lignes de la matrice.
+		int sparseMatrix_width;                     // Variable : Taille en colonnes de la matrice.
 
 	public:
 		SparseMatrix();

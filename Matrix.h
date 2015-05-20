@@ -1,6 +1,6 @@
 //!
 //!	\file		Matrix.h
-//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp, Clément Personnettaz
 //!	\version	1.0
 //! \brief      Fichier de déclaration de la classe Matrix. Définit les matrices.
 //!
@@ -13,9 +13,9 @@ class Matrix
 {
 
 	private:
-		FullMatrix* fullMatrix;
-		SparseMatrix* sparseMatrix;
-		const static int conversionCap = 70;
+		FullMatrix* fullMatrix;                 // Variable : De type fullMatrix
+		SparseMatrix* sparseMatrix;             // Variable : De type SparseMatrix
+		const static int conversionCap = 70;    // ??
 
 	public:
 		Matrix();

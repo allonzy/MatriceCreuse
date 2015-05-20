@@ -1,6 +1,6 @@
 //!
 //!	\file		FullMatrix.h
-//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp, Clément Personnettaz
 //!	\version	1.0
 //! \brief      Fichier de déclaration de la classe FullMatrix. Définit les matrices pleines et leurs possibilités d'utilisation.
 //!
@@ -21,16 +21,16 @@ using namespace std;
 
 //!
 //! \class 		FullMatrix
-//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp
+//! \author 	Simon Vivier, Jean Marliere, Maxime Dapp, Clément Personnettaz
 //! \brief      Cette classe définit ce qu'est une matrice pleine, ses accesseurs, ainsi que les surcharges d'opérateurs associées.
 //!
 
 class FullMatrix
 {
 	private:
-		int** fullMatrix_m;
-		int fullMatrix_height;
-		int fullMatrix_width;
+		int** fullMatrix_m;         // Variable : Tableau dynamique a 2 dimentions
+		int fullMatrix_height;      // Variable : Taille en lignes de la matrice.
+		int fullMatrix_width;       // Variable : Taille en colonnes de la matrice.
 
 	public:
 		FullMatrix();
@@ -58,7 +58,7 @@ class FullMatrix
 		FullMatrix& operator+=(FullMatrix& m2);
 		FullMatrix& operator-(FullMatrix& m2);
 		FullMatrix& operator-=(FullMatrix& m2);
-		
+
 };
 
 #endif
