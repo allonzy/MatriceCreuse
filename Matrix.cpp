@@ -32,9 +32,14 @@ Matrix::Matrix(){
 	Matrix_conversion();
 }
 
-Matrix::Matrix(string filePath){
-	Matrix_setFullMatrix(new FullMatrix(filePath));
-	Matrix_setSparseMatrix(NULL);
+Matrix::Matrix(string filePath, bool isSparse){
+	if(!isSparse){
+		Matrix_setFullMatrix(new FullMatrix(filePath));
+		Matrix_setSparseMatrix(NULL);
+	}else{
+		Matrix_setSparseMatrix(new SparseMatrix(filePath));
+		Matrix_setFullMatrix(NULL);
+	}
 	Matrix_conversion();
 }
 
