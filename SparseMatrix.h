@@ -36,6 +36,7 @@ class SparseMatrix
 		map<pair<int,int>,int> sparseMatrix_m;      //
 		int sparseMatrix_height;                    // Variable : Taille en lignes de la matrice.
 		int sparseMatrix_width;                     // Variable : Taille en colonnes de la matrice.
+		int sparseMatrix_elements;                  // Variable : Nombre d'éléments différents de 0
 
 	public:
 		SparseMatrix();
@@ -49,13 +50,15 @@ class SparseMatrix
 		int SparseMatrix_getValue(int x,int y);
 		int SparseMatrix_getMaxUse();
 		int SparseMatrix_getUse();
+        int SparseMatrix_getElements();
 
 		void SparseMatrix_setMaxUse(int maxUse);
-		void SparseMatrix_setUse(int use);
 		void SparseMatrix_setHeight(int height);
 		void SparseMatrix_setWidth(int width);
 		void SparseMatrix_setValue(int x,int y,int value);
+		void SparseMatrix_setElements(int elements);
 
+        void SparseMatrix_percentUse();
 		void SparseMatrix_clear();
 		void SparseMatrix_display();
 		bool SparseMatrix_loadMatrix(string matrixName);

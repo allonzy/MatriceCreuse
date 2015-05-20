@@ -135,6 +135,15 @@ int SparseMatrix::SparseMatrix_getWidth(){return sparseMatrix_width;}
 // --------------------------------
 
 //!
+//! \brief      Récupère le nombre d'éléments de la matrice.
+//! \return		Un \e int représentant le nombre d'éléments de la matrice.
+//!
+
+int SparseMatrix_getElements(){return sparseMatrix_elements;}
+
+// --------------------------------
+
+//!
 //! \brief      Récupère la valeur située en \e X, \e Y dans la matrice.
 //! \param		X 	Position en ligne souhaitée.
 //! \param		Y 	Position en colonne souhaitée.
@@ -176,6 +185,15 @@ void SparseMatrix::SparseMatrix_setUse(int use){sparseMatrix_use=use;}
 // --------------------------------
 
 //!
+//! \brief      Assigne le nombre d'elements de la matrice.
+//! \param		elements	Nombre d'elements de la matrice.
+//!
+
+void SparseMatrix_setElements(int elements){sparseMatrix_elements=elements;}
+
+// --------------------------------
+
+//!
 //! \brief      Assigne un nombre de lignes à la matrice.
 //! \param		height 	Nombre de lignes de la matrice, défini par l'utilisateur.
 //!
@@ -205,8 +223,10 @@ void SparseMatrix::SparseMatrix_setValue(int x,int y,int value){
 	map<pair<int,int>,int>::iterator it = sparseMatrix_m.find(make_pair(x,y));				// On place un itérateur à la position donnée.
 	if(value == 0)																			// Si la valeur de cette case vaut 0 (zéro) ...
 	{
-		if(!sparseMatrix_m[make_pair(x,y)])
-			sparseMatrix_m.erase(it);														// On efface la case donnée.
+		if(!sparseMatrix_m[make_pair(x,y)]){
+			sparseMatrix_m.erase(it);		                                                // On efface la case donnée.
+			sparseMatrix_elements--
+		}
 		else return;
 	}
 	else if(x > SparseMatrix_getHeight()  || y > SparseMatrix_getWidth() ){					// Sinon, si la valeur est hors des bornes de la matrice ...
@@ -214,8 +234,18 @@ void SparseMatrix::SparseMatrix_setValue(int x,int y,int value){
 	}
 	else{																					// Sinon, on a une valeur correcte ...
 		sparseMatrix_m.insert(it, std::pair<pair<int,int>,int>(make_pair(x,y),value));		// ... on réassigne donc la case à la valeur donnée.
+		sparseMatrix_elements++;
 	}
 }
+
+// --------------------------------
+
+//!
+//! \brief      Calcule le pourcentage de la matrice.
+//! \details	Calcule le pourcentage de la matrice et le met dans Use pour connaitre le pourcentage.
+//!
+
+void SparseMatrix::SparseMatrix_percentUse(){sparseMatrix_use = (sparseMatrix_elements / (sparseMatrix_height * sparseMatrix_width)) * 100}
 
 // --------------------------------
 
