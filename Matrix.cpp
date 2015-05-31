@@ -29,7 +29,6 @@ using namespace std;
 Matrix::Matrix(){
 	Matrix_setFullMatrix(new FullMatrix());
 	Matrix_setSparseMatrix(NULL);
-	Matrix_conversion();
 }
 
 Matrix::Matrix(string filePath, bool isSparse){
@@ -40,23 +39,21 @@ Matrix::Matrix(string filePath, bool isSparse){
 		Matrix_setSparseMatrix(new SparseMatrix(filePath));
 		Matrix_setFullMatrix(NULL);
 	}
-	Matrix_conversion();
 }
 
 Matrix::Matrix(int height, int width){
 	Matrix_setFullMatrix(new FullMatrix(height, width));
 	Matrix_setSparseMatrix(NULL);
-	Matrix_conversion();
 }
 
 Matrix::Matrix(Matrix& m2){
 	if(m2.Matrix_getFullMatrix() != NULL)
-		Matrix_setFullMatrix(new FullMatrix(*(m2.Matrix_getFullMatrix())));
+		Matrix_setFullMatrix(new FullMatrix(*m2.Matrix_getFullMatrix()));
 	else
 		Matrix_setFullMatrix(NULL);
 
 	if(m2.Matrix_getSparseMatrix() != NULL)
-		Matrix_setSparseMatrix(new SparseMatrix(*(m2.Matrix_getSparseMatrix())));
+		Matrix_setSparseMatrix(new SparseMatrix(*m2.Matrix_getSparseMatrix()));
 	else
 		Matrix_setSparseMatrix(NULL);
 }
@@ -86,10 +83,11 @@ void Matrix::Matrix_conversion(){
 	        		nbZero++;
 	        }
 	    }
-	    double ratio = (nbZero / nbElem) * 100;
-	    if(ratio > Matrix::Matrix_getConversionCap()){
+	    float ratio = 1-(nbZero / nbElem);
+	    if(ratio < Matrix::Matrix_getConversionCap()){
 	    	Matrix_fullToSparse();
 	    	delete Matrix_getFullMatrix();
+	    	matrix_fullMatrix = NULL;
 	    }
 
 	}
@@ -98,6 +96,7 @@ void Matrix::Matrix_conversion(){
 		if(Matrix_getSparseMatrix()->SparseMatrix_getUse() > Matrix::Matrix_getConversionCap()){
 			Matrix_sparseToFull();
 			delete Matrix_getSparseMatrix();
+			matrix_sparseMatrix = NULL;
 		}
 
 	}
@@ -125,6 +124,12 @@ void Matrix::Matrix_fullToSparse(){
     }
 }
 
+Matrix& Matrix::operator=(Matrix& m2)
+{
+	Matrix& m(m2);
+	return m;
+}
+
 Matrix& Matrix::operator+(Matrix& m2){
 	Matrix& tmp(*this);
 	tmp += m2;
@@ -132,68 +137,95 @@ Matrix& Matrix::operator+(Matrix& m2){
 	return tmp;
 }
 
-Matrix& Matrix::operator+=(Matrix& m2){
+void Matrix::operator+=(Matrix& m2){
 	if(Matrix_getFullMatrix() != NULL && m2.Matrix_getFullMatrix() != NULL){
-
 		*Matrix_getFullMatrix() += *(m2.Matrix_getFullMatrix());
-		return *this;
 
 	}else if(Matrix_getSparseMatrix() != NULL && m2.Matrix_getSparseMatrix() != NULL){
-
 		*Matrix_getSparseMatrix() += *(m2.Matrix_getSparseMatrix());
-		return *this;
 
 	}else if(Matrix_getFullMatrix() != NULL && m2.Matrix_getSparseMatrix() != NULL){
-
 		m2.Matrix_sparseToFull();
-		*Matrix_getFullMatrix() += *(m2.Matrix_getFullMatrix());
+		*Matrix_getFullMatrix() += *m2.Matrix_getFullMatrix();
 		delete m2.Matrix_getFullMatrix();
-		return *this;
+		m2.matrix_fullMatrix = NULL;
 
 	}else if(Matrix_getSparseMatrix() != NULL && m2.Matrix_getFullMatrix() != NULL){
-
 		Matrix_sparseToFull();
-		*Matrix_getFullMatrix() += *(m2.Matrix_getFullMatrix());
+		*Matrix_getFullMatrix() += *m2.Matrix_getFullMatrix();
 		delete Matrix_getSparseMatrix();
-		return *this;
+		matrix_sparseMatrix = NULL;
 
 	}
 }
 
-/*Matrix& Matrix::operator-(Matrix& m2){
+Matrix& Matrix::operator-(Matrix& m2){
 	Matrix& tmp(*this);
 	tmp -= m2;
 
 	return tmp;
 }
 
-Matrix& Matrix::operator-=(Matrix& m2){
+void Matrix::operator-=(Matrix& m2){
 	if(Matrix_getFullMatrix() != NULL && m2.Matrix_getFullMatrix() != NULL){
 
-		*Matrix_getFullMatrix() -= *(m2.Matrix_getFullMatrix());
-		return *this;
+		*Matrix_getFullMatrix() -= *m2.Matrix_getFullMatrix();
 
 	}else if(Matrix_getSparseMatrix() != NULL && m2.Matrix_getSparseMatrix() != NULL){
 
-		*Matrix_getSparseMatrix() -= *(m2.Matrix_getSparseMatrix());
-		return *this;
+		*Matrix_getSparseMatrix() -= *m2.Matrix_getSparseMatrix();
 
 	}else if(Matrix_getFullMatrix() != NULL && m2.Matrix_getSparseMatrix() != NULL){
 
 		m2.Matrix_sparseToFull();
-		*Matrix_getFullMatrix() -= *(m2.Matrix_getFullMatrix());
-		delete m2.Matrix_getFullMatrix();
-		return *this;
+		*Matrix_getFullMatrix() -= *m2.Matrix_getFullMatrix();
+		delete m2.Matrix_getFullMatrix();		
+		m2.matrix_fullMatrix = NULL;
 
 	}else if(Matrix_getSparseMatrix() != NULL && m2.Matrix_getFullMatrix() != NULL){
 
 		Matrix_sparseToFull();
-		*Matrix_getFullMatrix() -= *(m2.Matrix_getFullMatrix());
+		*Matrix_getFullMatrix() -= *m2.Matrix_getFullMatrix();
 		delete Matrix_getSparseMatrix();
-		return *this;
+		matrix_sparseMatrix = NULL;
 
 	}
-}*/
+}
+
+Matrix& Matrix::operator*(Matrix& m2){
+	Matrix& tmp(*this);
+	tmp *= m2;
+
+	return tmp;
+}
+
+void Matrix::operator*=(Matrix& m2){
+	if(Matrix_getFullMatrix() != NULL && m2.Matrix_getFullMatrix() != NULL){
+
+		*matrix_fullMatrix = *Matrix_getFullMatrix() * *m2.Matrix_getFullMatrix();
+
+	}else if(Matrix_getSparseMatrix() != NULL && m2.Matrix_getSparseMatrix() != NULL){
+
+		*matrix_sparseMatrix = *Matrix_getSparseMatrix() * *m2.Matrix_getSparseMatrix();
+
+	}else if(Matrix_getFullMatrix() != NULL && m2.Matrix_getSparseMatrix() != NULL){
+
+		Matrix_fullToSparse();
+		*matrix_sparseMatrix = *Matrix_getSparseMatrix() * *m2.Matrix_getSparseMatrix();
+		delete Matrix_getFullMatrix();		
+		matrix_fullMatrix = NULL;
+		Matrix_conversion();
+
+	}else if(Matrix_getSparseMatrix() != NULL && m2.Matrix_getFullMatrix() != NULL){
+
+		m2.Matrix_fullToSparse();
+		*matrix_sparseMatrix = *Matrix_getSparseMatrix() * *m2.Matrix_getSparseMatrix();
+		delete m2.Matrix_getSparseMatrix();
+		m2.matrix_sparseMatrix = NULL;
+		Matrix_conversion();
+
+	}
+}
 
 int Matrix::Matrix_getConversionCap(){
 	return Matrix::matrix_conversionCap;
@@ -203,7 +235,8 @@ FullMatrix* Matrix::Matrix_getFullMatrix(){
 	return matrix_fullMatrix;
 }
 void Matrix::Matrix_setFullMatrix(FullMatrix* m2){
-	delete matrix_fullMatrix;
+	if(matrix_fullMatrix != NULL)
+		delete matrix_fullMatrix;
 	matrix_fullMatrix = m2;
 }
 
@@ -211,7 +244,8 @@ SparseMatrix* Matrix::Matrix_getSparseMatrix(){
 	return matrix_sparseMatrix;
 }
 void Matrix::Matrix_setSparseMatrix(SparseMatrix* m2){
-	delete matrix_sparseMatrix;
+	if(matrix_sparseMatrix != NULL)
+		delete matrix_sparseMatrix;
 	matrix_sparseMatrix = m2;
 }
 

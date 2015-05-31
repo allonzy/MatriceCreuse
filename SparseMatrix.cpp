@@ -376,6 +376,57 @@ SparseMatrix& SparseMatrix::operator+(SparseMatrix& m2)
 	tmp += m2;
 	return tmp;
 }
+
+// --------------------------------
+
+//!
+//! \brief      Opérateur de retrait (-=) de matrices creuses.
+//! \details	Permet le retrait des valeurs d'une matrice dans une autre.
+//!	\param		m2 		Matrice à retirer dans la première.
+//! \returns	Renvoie un pointeur sur la matrice résultat.
+//!
+
+void SparseMatrix::operator-=(SparseMatrix& m2)
+{
+	if (SparseMatrix_getHeight() != m2.SparseMatrix_getHeight() || SparseMatrix_getWidth() != m2.SparseMatrix_getWidth()){
+		cerr << "operator -= error : matrix uncompatible." << endl;
+	}
+	else {
+		for (int iRow = 0; iRow < SparseMatrix_getHeight(); iRow++)
+		{
+			for (int iCol = 0; iCol < SparseMatrix_getWidth(); iCol++)
+			{
+				int v1 = SparseMatrix_getValue(iRow,iCol);
+	        	int v2 = m2.SparseMatrix_getValue(iRow,iCol);
+	        	SparseMatrix_setValue(iRow, iCol,v1-v2);
+			}
+		}
+		SparseMatrix_setUse();
+	}
+}
+
+// --------------------------------
+
+//!
+//! \brief      Opérateur de soustraction (-) de matrices creuses.
+//! \details	Permet la soustraction des valeurs d'une matrice dans une autre.
+//!	\param		m2 		Matrice à soustraire avec la première.
+//! \returns	Renvoie une matrice, résultant de l'opération.
+//!
+
+SparseMatrix& SparseMatrix::operator-(SparseMatrix& m2)
+{
+	if (SparseMatrix_getHeight() != m2.SparseMatrix_getHeight() || SparseMatrix_getWidth() != m2.SparseMatrix_getWidth())
+	{
+		cerr << "operator - error : matrix uncompatible." << endl;
+		return *this;
+	}
+	
+	SparseMatrix& tmp(*this);
+	tmp -= m2;
+	return tmp;
+}
+
 //!
 //! \brief      Opérateur de multiplication (*) de matrices creuses.
 //! \details	Permet la multiplication des valeurs d'une matrice dans une autre.

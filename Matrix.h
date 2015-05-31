@@ -15,9 +15,9 @@ class Matrix
 {
 
 	private:
-		FullMatrix* matrix_fullMatrix;
-		SparseMatrix* matrix_sparseMatrix;
-		const static int matrix_conversionCap = 70;
+		FullMatrix* matrix_fullMatrix = NULL;
+		SparseMatrix* matrix_sparseMatrix = NULL;
+		const static float matrix_conversionCap = 0.2; // % de nombre != de 0 à avoir dans la matrice pour qu'elle soit rentable en SparseMatrix
 
 	public:
 		Matrix();
@@ -26,12 +26,13 @@ class Matrix
 		Matrix(Matrix& m2);
 		~Matrix();
 
+		Matrix& operator=(Matrix& m2);
 		Matrix& operator+(Matrix& m2);
-		Matrix& operator+=(Matrix& m2);
+		void operator+=(Matrix& m2);
 		Matrix& operator-(Matrix& m2);
-		Matrix& operator-=(Matrix& m2);
-		//Matrix operator*(Matrix m2);
-		//Matrix operator*=(Matrix m2);
+		void operator-=(Matrix& m2);
+		Matrix& operator*(Matrix& m2);
+		void operator*=(Matrix& m2);
 		static int Matrix_getConversionCap();
 
 		int Matrix_getValue(int x, int y);

@@ -79,6 +79,8 @@ void FullCalc()
 		{
 			c = a+b;
 			c.FullMatrix_display();
+			cout << endl << endl;
+			a.FullMatrix_display();
 			break;
 		}
 		case 2:
